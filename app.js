@@ -7,7 +7,6 @@ var http = require('http'),
     route = require('./route');
 
 var app = express();
-var port = 8081;
 
 app.get('/', route.index);
 
@@ -37,8 +36,8 @@ app.get('/styles/*', route.getStyles);
 
 
 
-http.createServer(app).listen(port, function () {
-    console.log('Express server listening on port ' + port);
+http.createServer(app).listen(process.env.PORT || 8081, function () {
+    console.log('Working');
 });
 
 
