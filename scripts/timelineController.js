@@ -4,7 +4,7 @@
 
 function GoogleLogout($scope, $http){
     $scope.logout = function () {
-        document.location = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8081"
+        document.location = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=" + document.location
 //        $http({
 //            method: 'GET',
 //            url: '/oauthClear'
