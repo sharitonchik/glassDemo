@@ -11,12 +11,6 @@
         CCH Tax Briefing
     </div>
 
-    <div class="timelines" ng-controller="TimelineList">
-        <div class="timeline" ng-repeat="item in timelines" ng-click="deleteCard()">
-            {{item.content}}
-        </div>
-    </div>
-
     <div class="news" ng-controller="VelvetNews">
         <div ng-repeat="item in news" ng-click="insertNews()">{{item.title}}</div>
     </div>
