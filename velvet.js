@@ -40,6 +40,9 @@ function velvetGetTrackers(request, response) {
             data = JSON.parse(data);
             console.log('DATA get trackers', data);
 
+            response.send(process.env || 'localhost');
+            response.end();
+            /*
             if (data.d) {
                 data = data.d.results;
                 var resultJson = {};
@@ -57,7 +60,7 @@ function velvetGetTrackers(request, response) {
             } else {
                 response.send('into trouble');
                 response.end();
-            }
+            }*/
         });
 
     }
