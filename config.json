@@ -1,7 +1,7 @@
 {
     "CLIENT_ID" : "652654809546.apps.googleusercontent.com",
     "CLIENT_SECRET" : "zHUPOUZnPunkzodK1s1KgVev",
-    "REDIRECT_URL" : "http://localhost:8081/oauth2callback",
+    "REDIRECT_URL" : "http://bamboo-glass.azurewebsites.net/oauth2callback",
     "velvetConfig": {
         "velvetUrl": "velvet.intelliconnect.cch.com",
         "credentials": {
