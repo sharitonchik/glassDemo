@@ -2,9 +2,9 @@
     "name": "glass-mirror-nodejs-demo",
     "version": "0.0.1",
     "private": true,
-    "author": "siargey.haritonchik.@gmail.com",
-    "bugs": "siargey.haritonchik.@gmail.com",
-    "contributors": "siargey.haritonchik.@gmail.com",
+    "author": "siargey.haritonchik@gmail.com",
+    "bugs": "siargey.haritonchik@gmail.com",
+    "contributors": "siargey.haritonchik@gmail.com",
     "keywords": ["glass", "mirror api"],
     "scripts": {
         "start": "node app.js"
