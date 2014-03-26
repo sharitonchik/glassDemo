@@ -36,6 +36,7 @@ function SearchNews($scope, $http){
 
 function VelvetNews($scope, $http) {
     $http({method: 'GET', url: '/velvetTrackers'}).success(function (data, status, headers, config) {
+        console.log('trackers', data);
         $scope.news = data.trackers;
     }).error(function (data, status, headers, config) {
             console.err(data);
