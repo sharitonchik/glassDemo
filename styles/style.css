@@ -1,0 +1,12 @@
+.timelines {
+    width: 100%;
+    /*border: 1px solid black;*/
+}
+
+.timeline, .news, .search-news {
+    float: left;
+    width: 450px;
+    height: 100%;
+    padding: 5px;
+    border: 1px solid green;
+}

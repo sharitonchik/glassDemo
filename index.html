@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello world</title>
+    <script src="scripts/angular.js"></script>
+    <script src="scripts/timelineController.js"></script>
+    <link rel="stylesheet" href="styles/style.css" type="text/css">
+</head>
+<body ng-app>
+    <div class="search-news" ng-controller="SearchNews" ng-click="insertSearch()">
+        CCH Tax Briefing
+    </div>
+
+    <div class="timelines" ng-controller="TimelineList">
+        <div class="timeline" ng-repeat="item in timelines" ng-click="deleteCard()">
+            {{item.content}}
+        </div>
+    </div>
+
+    <div class="news" ng-controller="VelvetNews">
+        <div ng-repeat="item in news" ng-click="insertNews()">{{item.title}}</div>
+    </div>
+
+</body>
+</html>
