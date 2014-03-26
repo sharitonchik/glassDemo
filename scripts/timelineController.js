@@ -1,6 +1,23 @@
 /**
  * Created by sergey on 3/22/14.
  */
+
+function GoogleLogout($scope, $http){
+    $scope.logout = function () {
+        document.location = "https://www.google.com/accounts/Logout?continue=https://appengine.google.com/_ah/logout?continue=http://localhost:8081"
+//        $http({
+//            method: 'GET',
+//            url: '/oauthClear'
+//        }).
+//            success(function (data, status, headers, config) {
+//                console.log('data', data);
+//            }).
+//            error(function (data, status, headers, config) {
+//                console.log('data', data);
+//            });
+    }
+}
+
 function SearchNews($scope, $http){
     $scope.insertSearch = function () {
         $http({

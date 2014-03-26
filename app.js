@@ -12,6 +12,8 @@ app.get('/', route.index);
 
 app.get('/oauth2callback', route.oauthCallback);
 
+app.get('/oauthClear', route.clearCredentials);
+
 app.get('/velvetTracker', route.velvetTracker);
 
 app.get('/insert', route.timelineInsert);

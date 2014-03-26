@@ -14,8 +14,10 @@ function setConfig(config) {
     credentials = config.credentials;
     velvetUrl = config.velvetUrl;
     console.log('VELVET setconfig', credentials);
-    http.get('http://localhost:8081/velvetAuthorization', function () {
-        console.log('Authorization success');
+    console.log('VELVET domain', require('domain').create());
+    //TODO domain call
+    http.get('http://bamboo-glass.azurewebsites.net/velvetAuthorization', function () {
+        console.log('VELVET Authorization success');
     });
 }
 
@@ -50,7 +52,7 @@ function velvetGetTrackers(request, response) {
                     });
                 }
 
-                response.send(resultJson);
+                response.send(process.env || 'localhost');
                 response.end();
             } else {
                 response.send('into trouble');
@@ -114,13 +116,12 @@ function velvetSearch(request, response) {
             data = JSON.parse(data);
             if (data.d) {
                 data = data.d.Result.Items.results;
-
+                console.log('SEARCH data', data);
                 var requestString = '';
                 var bundleCallback = function (html) {
                     html += '&cardTitle=CCH Tax Briefing';
                     //TODO domain call
-                    http.get('http://localhost:8081/insertBundle?' + html, function () {
-                    });
+                    http.get('http://bamboo-glass.azurewebsites.net/insertBundle?' + html, function () {});
 
                     response.send('insert card');
                     response.end();
@@ -134,10 +135,11 @@ function velvetSearch(request, response) {
                         var url_parts = nodeUrl.parse(path, true);
                         var query = url_parts.query;
 
+                        newsData = JSON.parse(newsData);
                         requestString += 'doc' + query.index + '=' + data[query.index].Title;
 
-                        if (JSON.parse(newsData).url) {
-                            requestString += '&doc' + query.index + '=' + JSON.parse(newsData).url;
+                        if (newsData.url) {
+                            requestString += '&doc' + query.index + '=' + newsData.url;
                         }
 
                         if (query.index !== len - 1) {
@@ -179,15 +181,14 @@ function velvetTracker(request, response) {
             headers: headers
         }, function (data) {
             data = JSON.parse(data);
-            console.log('DATA get tracker', data);
+//            console.log('DATA get tracker', data);
 
             if (data.d) {
                 data = data.d.results;
-
+                console.log('DATA get tracker results', data);
                 var requestString = '';
 
                 requestString += '&cardTitle=' + query.title;
-                //TODO domain call
                 for (var i = 0, len = data.length, item; i < len; i += 1) {
                     item = data[i];
                     requestString += 'doc' + i + '=' + item.Title;
@@ -197,8 +198,10 @@ function velvetTracker(request, response) {
                     }
                 }
                 console.log('requestString', requestString);
+
+                //TODO domain call
                 /*
-                 http.get('http://localhost:8081/insert?' + requestString, function () {
+                 http.get('http://bamboo-glass.azurewebsites.net/insert?' + requestString, function () {
                  });*/
 
                 response.send('insert card');

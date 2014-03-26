@@ -7,12 +7,16 @@
     <link rel="stylesheet" href="styles/style.css" type="text/css">
 </head>
 <body ng-app>
-    <div class="search-news" ng-controller="SearchNews" ng-click="insertSearch()">
+    <button  ng-controller="SearchNews" ng-click="insertSearch()">
         CCH Tax Briefing
-    </div>
+    </button>
+
+    <button  ng-controller="GoogleLogout" ng-click="logout()">
+        Google logout
+    </button>
 
     <div class="news" ng-controller="VelvetNews">
-        <div ng-repeat="item in news" ng-click="insertNews()">{{item.title}}</div>
+        <button class="news-item" ng-repeat="item in news" ng-click="insertNews()">{{item.title}}</button>
     </div>
 
 </body>

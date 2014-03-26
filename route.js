@@ -16,6 +16,7 @@ var oauth2Client = new OAuth2Client(config.CLIENT_ID, config.CLIENT_SECRET, conf
 velvet.setConfig(config.velvetConfig);
 
 function mainRequest(request, response) {
+    console.log('cred', oauth2Client.credentials);
     if (!oauth2Client.credentials) {
         var url = oauth2Client.generateAuthUrl({
             access_type: 'offline',
@@ -209,6 +210,13 @@ function saveCredentials(code, success, failure) {
     });
 }
 
+function clearCredentials(request, response){
+    oauth2Client.credentials = null;
+ /*   oauth2Client.setToken();*/
+    response.send('credentials cleared.');
+    response.end();
+}
+
 function oauthCallback(request, response) {
     console.log('oauthCallback code: ', request.query.code);
     saveCredentials(request.query.code, function () {
@@ -255,4 +263,5 @@ exports.timelineInsert = timelineInsert;
 exports.timelineBundleInsert = timelineBundleInsert;
 
 exports.oauthCallback = oauthCallback;
+exports.clearCredentials = clearCredentials;
 exports.index = mainRequest;
