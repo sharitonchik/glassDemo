@@ -28,10 +28,6 @@ function mainRequest(request, response) {
     }
 }
 
-function getNewsConfig(request, response) {
-    response.sendfile("velvetNewsConfig.json");
-}
-
 function getScript(request, response) {
     response.sendfile(__dirname + request.path);
 }
@@ -58,6 +54,7 @@ function timelineClear(request, response) {
                 mirrorApiExecute('delete', item.id, success, failure);
             }
             response.send('All items deleted.');
+            response.end();
         }, failure);
     }
 }
@@ -91,6 +88,7 @@ function timelineList(request, response) {
         mirrorApiExecute('list', null, function (data) {
             console.log('TIMELINE LIST response: ', data);
             response.send(data);
+            response.end();
         }, failure);
     }
 }
@@ -106,9 +104,8 @@ function timelineInsert(request, response) {
     } else {
         var url_parts = nodeUrl.parse(request.url, true);
         var query = url_parts.query;
-
         var resultHtml = '';
-        console.log('INSERT query: ', query);
+
         if (query.cardTitle) {
             resultHtml += '<article class="cover-only text-large"><section><p>' + query.cardTitle + '</p></section></article>';
         }
@@ -118,7 +115,6 @@ function timelineInsert(request, response) {
             }
         }
 
-        console.log('INSERT result html: ', resultHtml);
         mirrorApiExecute('insert', {
             "html": resultHtml,
             "notification": {
@@ -126,13 +122,12 @@ function timelineInsert(request, response) {
             },
             "menuItems": [
                 {"action": "SHARE"},
-                {"action": "OPEN_URI",
-                    "payload": "https://www.youtube.com/watch?feature=player_embedded&v=3qqhwjHi5z0"
-                },
                 {"action": "DELETE"}
             ]
         }, success, failure);
-        response.send('something happened');
+
+        response.send('Timeline insert');
+        response.end();
     }
 }
 
@@ -174,17 +169,16 @@ function timelineBundleInsert(request, response) {
                     {"action": "DELETE"}
                 ];
 
-                if (query[key][0]) {
+                if (typeof query[key] !== 'string') {
                     text = query[key][0];
                     payload = query[key][1];
-                    menuItems.push({
+                    menuItems.splice(1, 0, {
                         "action": "OPEN_URI",
                         "payload": payload
                     });
                 } else {
                     text = query[key];
                 }
-                console.log('text', text);
             /*    resultHtml = {
                     "text": text,
                     "bundleId": date,
@@ -199,7 +193,8 @@ function timelineBundleInsert(request, response) {
 
         }
 
-        response.send('something happened');
+        response.send('Bundle timelines set');
+        response.end();
     }
 }
 
@@ -218,6 +213,7 @@ function oauthCallback(request, response) {
     console.log('oauthCallback code: ', request.query.code);
     saveCredentials(request.query.code, function () {
         response.redirect('/');
+        response.end();
     }, failure);
 }
 
@@ -232,16 +228,6 @@ function mirrorApiExecute(command, data, successCallback, errorCallback) {
             }
         });
 }
-
-//http://velvet-na-dev.cloudapp.net/rsi-v1.svc/UserTrackers?$expand=Options&$orderby=Title&$skip=0&$top=501&_dc=1395323864727
-//http://velvet-na-dev.cloudapp.net/rsi-v1.svc/Search?$expand=Result/Items,Result/Citations/Items,Result/FilterTrees/Root/Children&workspaceId=-1&filterTreeId=%27cef573c2-fdc5-11dd-87af-0800200c9a66%27&filterTreeId=%27cef573c4-fdc5-11dd-87af-0800200c9a66%27&contentTreeNodeId=%27Csh!WKUS-TAL-DOCS-PHC-%7B18D897D0-E8F8-4202-A3BE-5CB2B2A7C4A2%7D%27&sort=%27mostrecent%27&citationCombo=true&_dc=1395323988509
-//http://velvet-azure.intelliconnect.cch.com/rsi-v1.svc/UserTrackers?$expand=Options&$orderby=Title&$skip=0&$top=501&_dc=1395405417933
-//http://velvet-azure.intelliconnect.cch.com/rsi-v1.svc/UserTrackers('481048')/News?$orderby=Index&$skip=0&$top=11&_dc=1395405458597
-//dev 'UserTrackers(\'1120393\')/News?$orderby=Index&$skip=0&$top=11&_dc=1395324098555'
-//var ref = 'https://velvet.intelliconnect.cch.com/route/ic-router/SearchResultListItem?searchResultListItemId=' + listData[i].Id + '&apikey=owl-dev-test&authorization=' + auth;
-//http://velvet.intelliconnect.stg.cch.com/rsi-v1.svc/UserTrackers?$expand=Options&$orderby=Title&$skip=0&$top=501&_dc=1395475142649
-//http://velvet.intelliconnect.stg.cch.com/rsi-v1.svc/Search?$expand=Result/Items,Result/Citations/Items,Result/FilterTrees/Root/Children&workspaceId=-1&filterTreeId=%27cef573c2-fdc5-11dd-87af-0800200c9a66%27&filterTreeId=%27cef573c4-fdc5-11dd-87af-0800200c9a66%27&query=%27*%27&contentTreeNodeId=%27Csh!WKUS-TAL-DOCS-PHC-%7B18D897D0-E8F8-4202-A3BE-5CB2B2A7C4A2%7D%27&sort=%27mostrecent%27&citationCombo=true&_dc=1395475142841
-//http://velvet.intelliconnect.stg.cch.com/rsi-v1.svc/Search?$expand=Result/Items,Result/Citations/Items,Result/FilterTrees/Root/Children&workspaceId=-1&filterTreeId=%27cef573c2-fdc5-11dd-87af-0800200c9a66%27&filterTreeId=%27cef573c4-fdc5-11dd-87af-0800200c9a66%27&query=%27*%27&contentTreeNodeId=%27Csh!WKUS-TAL-DOCS-PHC-%7BDDE2ADE4-CE28-46FA-8A1A-86E199A52791%7D%27&sort=%27mostrecent%27&citationCombo=true&_dc=1395475142849
 
 function success(data, callback) {
     console.log('success ', data);
@@ -261,7 +247,6 @@ exports.velvetSearch = velvet.velvetSearch;
 
 exports.getScript = getScript;
 exports.getStyles = getStyles;
-exports.getNewsConfig = getNewsConfig;
 
 exports.timelineList = timelineList;
 exports.timelineDeleteItem = timelineDeleteItem;

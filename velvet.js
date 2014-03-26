@@ -3,13 +3,6 @@
  */
 //http://velvet-azure.intelliconnect.cch.com/
 //velvet.intelliconnect.stg.cch.com
-
-//Csh!WKUS-TAL-DOCS-PHC-{DDE2ADE4-CE28-46FA-8A1A-86E199A52791}
-///rsi-v1.svc/SearchResultListItemStream/$value?searchResultListItemId=%2714032509370128c2d0c02678744ea1b27ef2280b38b69e!0000000012!stb01cd88236e7b791000b877d8d385ad169402%27&channelId=%27owl-embeded-v2%27&_dc=1395740320843
-
-///rsi-v1.svc/UserTrackers?$expand=Options&$orderby=Title&$skip=0&$top=501&_dc=1395741401013	200	GET	velvet-na-dev.cloudapp.net	/rsi-v1.svc/UserTrackers?$expand=Options&$orderby=Title&$skip=0&$top=501&_dc=1395741401013	 1671 ms	2.56 KB	Complete
-///rsi-v1.svc/Search?$expand=Result/Items,Result/Citations/Items,Result/FilterTrees/Root/Children&workspaceId=-1&filterTreeId=%27cef573c2-fdc5-11dd-87af-0800200c9a66%27&filterTreeId=%27cef573c4-fdc5-11dd-87af-0800200c9a66%27&query=%27*%27&contentTreeNodeId=%27Csh!WKUS-TAL-DOCS-PHC-%7B18D897D0-E8F8-4202-A3BE-5CB2B2A7C4A2%7D%27&sort=%27mostrecent%27&citationCombo=true&_dc=1395741401251	/rsi-v1.svc/Search?$expand=Result/Items,Result/Citations/Items,Result/FilterTrees/Root/Children&workspaceId=-1&filterTreeId=%27cef573c2-fdc5-11dd-87af-0800200c9a66%27&filterTreeId=%27cef573c4-fdc5-11dd-87af-0800200c9a66%27&query=%27*%27&contentTreeNodeId=%27Csh!WKUS-TAL-DOCS-PHC-%7B18D897D0-E8F8-4202-A3BE-5CB2B2A7C4A2%7D%27&sort=%27mostrecent%27&citationCombo=true&_dc=1395741401251
-//  /rsi-v1.svc/Search?$expand=Result/Items,Result/Citations/Items,Result/FilterTrees/Root/Children&workspaceId=-1&filterTreeId=%27cef573c2-fdc5-11dd-87af-0800200c9a66%27&filterTreeId=%27cef573c4-fdc5-11dd-87af-0800200c9a66%27&query=%27*%27&contentTreeNodeId=%27Csh!WKUS-TAL-DOCS-PHC-%7BDDE2ADE4-CE28-46FA-8A1A-86E199A52791%7D%27&sort=%27mostrecent%27&citationCombo=true&_dc=1395741401259	200	GET	velvet-na-dev.cloudapp.net	/rsi-v1.svc/Search?$expand=Result/Items,Result/Citations/Items,Result/FilterTrees/Root/Children&workspaceId=-1&filterTreeId=%27cef573c2-fdc5-11dd-87af-0800200c9a66%27&filterTreeId=%27cef573c4-fdc5-11dd-87af-0800200c9a66%27&query=%27*%27&contentTreeNodeId=%27Csh!WKUS-TAL-DOCS-PHC-%7BDDE2ADE4-CE28-46FA-8A1A-86E199A52791%7D%27&sort=%27mostrecent%27&citationCombo=true&_dc=1395741401259	 1152 ms	10.26 KB	Complete
 var http = require('http'),
     nodeUrl = require('url'),
     rsi = "/rsi-v1.svc/",
@@ -37,14 +30,14 @@ function velvetGetTrackers(request, response) {
         response.send('authorizated');
     } else {
         headers.Authorization = token;
-//        path: rsi + 'Search?$expand=Result/Items,Result/Citations/Items,Result/FilterTrees/Root/Children&workspaceId=-1&filterTreeId=%27cef573c2-fdc5-11dd-87af-0800200c9a66%27&filterTreeId=%27cef573c4-fdc5-11dd-87af-0800200c9a66%27&contentTreeNodeId=%27Csh!WKUS-TAL-DOCS-PHC-%7B18D897D0-E8F8-4202-A3BE-5CB2B2A7C4A2%7D%27&sort=%27mostrecent%27&citationCombo=true&_dc=1395323988509',
         requestNode({
             host: velvetUrl,
             path: rsi + 'UserTrackers?$expand=Options&$orderby=Title&$skip=0&$top=501&_dc=1395475142649',
             headers: headers
         }, function (data) {
-            console.log('DATA', data);
             data = JSON.parse(data);
+            console.log('DATA get trackers', data);
+
             if (data.d) {
                 data = data.d.results;
                 var resultJson = {};
@@ -121,7 +114,6 @@ function velvetSearch(request, response) {
             data = JSON.parse(data);
             if (data.d) {
                 data = data.d.Result.Items.results;
-//                console.log('DATA', data);
 
                 var requestString = '';
                 var bundleCallback = function (html) {
@@ -135,25 +127,16 @@ function velvetSearch(request, response) {
                 };
                 var waiting = data.length;
                 for (var i = 0, len = data.length; i < len; i += 1) {
-//                    console.log('DocumentID', data[i].DocumentId);
                     requestNode({
                         host: 'news-cch-com-dev.azurewebsites.net',
                         path: '/api/document-link?documentId=' + data[i].DocumentId + '&index=' + i
                     }, function (newsData, path) {
-                        //http://news.cch.com/api/document-link?documentId=ftd011ea674867bd3100083e090b11c18c90207&_dc=1395413377325
-                        //http://news-cch-com-dev.azurewebsites.net/api/document-link?documentId=stb01cd88236e7b791000b877d8d385ad169402&_dc=1395740326442
-                        //XMLHttpRequest
-                        console.log('data news.cch', JSON.parse(newsData).url);
-//                        console.log('ORIGINAL DATA', res.connection._httpMessage.path);
-
                         var url_parts = nodeUrl.parse(path, true);
                         var query = url_parts.query;
 
-                        console.log('i', query.index);
-
                         requestString += 'doc' + query.index + '=' + data[query.index].Title;
 
-                        if(JSON.parse(newsData).url){
+                        if (JSON.parse(newsData).url) {
                             requestString += '&doc' + query.index + '=' + JSON.parse(newsData).url;
                         }
 
@@ -195,41 +178,31 @@ function velvetTracker(request, response) {
             path: rsi + 'UserTrackers(\'' + query.id + '\')/News?$orderby=Index&$skip=0&$top=11&_dc=1395324098555',
             headers: headers
         }, function (data) {
-            console.log('DATA', data);
             data = JSON.parse(data);
+            console.log('DATA get tracker', data);
+
             if (data.d) {
                 data = data.d.results;
 
                 var requestString = '';
-                var bundleCallback = function () {
-                    requestString += '&cardTitle=' + query.title;
-                    //TODO domain call
-                    http.get('http://localhost:8081/insertBundle?' + requestString, function () {
-                    });
 
-                    response.send('insert card');
-                    response.end();
-                };
+                requestString += '&cardTitle=' + query.title;
+                //TODO domain call
+                for (var i = 0, len = data.length, item; i < len; i += 1) {
+                    item = data[i];
+                    requestString += 'doc' + i + '=' + item.Title;
 
-                for (var i = 0, len = data.length; i < len; i += 1) {
-                    requestNode({
-                        host: 'news-cch-com-dev.azurewebsites.net',
-                        path: '/api/document-link?documentId=' + data[i].Id,
-                        headers: headers
-                    }, function (data) {
-                        //http://news.cch.com/api/document-link?documentId=ftd011ea674867bd3100083e090b11c18c90207&_dc=1395413377325
-                        //http://news-cch-com-dev.azurewebsites.net/api/document-link?documentId=stb01cd88236e7b791000b877d8d385ad169402&_dc=1395740326442
-                        //XMLHttpRequest
-                        console.log('data news.cch', data);
-                        requestString += 'doc' + i + '=' + data[i].Title;
-                        if (i !== len - 1) {
-                            requestString += '&';
-                        } else {
-                            bundleCallback();
-                        }
-                    });
-
+                    if (i !== len - 1) {
+                        requestString += '&';
+                    }
                 }
+                console.log('requestString', requestString);
+                /*
+                 http.get('http://localhost:8081/insert?' + requestString, function () {
+                 });*/
+
+                response.send('insert card');
+                response.end();
             } else {
                 response.send('into trouble');
                 response.end();
